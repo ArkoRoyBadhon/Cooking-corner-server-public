@@ -54,10 +54,21 @@ async function run() {
             console.log(name);
             const query = {
                 "$or": [
-                    {"email": {$regex: req.params.email}}
+                    { "email": { $regex: req.params.email } }
                 ]
             }
             const result = await reviewCollection.find(query).toArray()
+            res.send(result)
+        })
+
+        app.get('/all-reviews/:id', async (req, res) => {
+            // const id = req.params.id;
+            const query = {
+                "$or": [
+                    { "review_service": { $regex: req.params.id } }
+                ]
+            }
+            const result = await reviewCollection.find(query).toArray();
             res.send(result)
         })
 
