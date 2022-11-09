@@ -37,16 +37,28 @@ async function run() {
 
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id
-            const query = {_id: ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const service = await serviceCollection.findOne(query);
             res.send(service);
         })
 
-        app.post('/reviews', async (req,res) =>{
+        app.post('/reviews', async (req, res) => {
             const review = req.body;
-            console.log(review);
+            // console.log(review);
             const result = await reviewCollection.insertOne(review);
             res.send(result);
+        })
+
+        app.get('/reviews/:email', async (req, res) => {
+            const name = req.params.email;
+            console.log(name);
+            const query = {
+                "$or": [
+                    {"email": {$regex: req.params.email}}
+                ]
+            }
+            const result = await reviewCollection.find(query).toArray()
+            res.send(result)
         })
 
 
@@ -65,11 +77,11 @@ run().catch(err => console.log(err))
 
 
 
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
     res.send('Cooking corner server is running successfully')
 })
 
 
-app.listen(port, ()=> {
+app.listen(port, () => {
     console.log("Cooking corner is running...");
 })
